@@ -99,6 +99,14 @@ def collect(mission=None, progress=None):
     if "disk" in sys_events.lower() and "error" in sys_events.lower():
         findings.append("System event logs mention disk errors. Review disk/controller health.")
     failed = [r["name"] for r in data["command_results"] if not r["ok"]]
+    disk_fallbacks = ["disk_cim", "disk_getdisk", "physical_disk"]
+    disk_fallback_success = any(
+        name in data["commands"] and not data["commands"][name].startswith("ERROR:")
+        for name in disk_fallbacks
+    )
+    if "disk_wmic" in failed and disk_fallback_success:
+        findings.append("WMIC disk check failed, but newer disk fallback collection succeeded.")
+        failed = [name for name in failed if name != "disk_wmic"]
     if failed:
         findings.append("Some collectors failed and may need fallback improvement: " + ", ".join(failed))
     services = data["commands"].get("services", "")

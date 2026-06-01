@@ -5,7 +5,18 @@ import os
 import json
 
 from fieldseed.core.database import init_db, connect
-from fieldseed.core.ticket_manager import create_ticket, update_ticket, close_ticket, list_tickets, get_ticket, search_tickets, get_recent_ticket_choices, attach_evidence_to_ticket, list_open_tickets, set_ticket_status, search_tickets, get_recent_ticket_choices, attach_evidence_to_ticket
+from fieldseed.core.ticket_manager import (
+    create_ticket,
+    update_ticket,
+    close_ticket,
+    list_tickets,
+    get_ticket,
+    search_tickets,
+    get_recent_ticket_choices,
+    attach_evidence_to_ticket,
+    list_open_tickets,
+    set_ticket_status,
+)
 from fieldseed.core.ai_bridge import ask_fieldseed, ollama_online
 from fieldseed.core.agent_loop import run_health_check
 from fieldseed.core.evidence_engine import import_evidence, find_packages

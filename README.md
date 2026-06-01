@@ -39,3 +39,18 @@ Future versions can include:
 - Photo attachment support
 - AI-assisted summaries
 - Offline-first mobile support
+
+
+## Command Center
+
+Run these from the project root:
+
+```powershell
+python -m fieldseed doctor
+python -m fieldseed app
+python -m fieldseed collect
+python -m fieldseed tickets
+python -m fieldseed brain "OpenEye command station login works in web but not app"
+```
+
+Use `doctor` first after each major change. It checks folders, required files, Python compilation, database access, Ollama status, and open tickets.
