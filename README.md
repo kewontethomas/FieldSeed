@@ -54,3 +54,21 @@ python -m fieldseed brain "OpenEye command station login works in web but not ap
 ```
 
 Use `doctor` first after each major change. It checks folders, required files, Python compilation, database access, Ollama status, and open tickets.
+
+
+## Advanced hardening commands
+
+FieldSeed now includes a hardened safety spine for higher-trust technician work.
+
+```powershell
+python -m fieldseed diagnose "OpenEye command station login works in web but not app"
+python -m fieldseed safety "restart service"
+python -m fieldseed evidence-score "data/evidence_packages/example/evidence_package.json"
+```
+
+These commands add:
+- safety/risk classification before actions
+- diagnostic orchestration from issue text
+- evidence package scoring
+- audit JSON logs with event hashes
+- stronger separation between confirmed knowledge, similar knowledge, and unknowns

@@ -5,6 +5,10 @@ from fieldseed.core.agent_loop import run_health_check
 from fieldseed.core.ai_bridge import ask_fieldseed, ollama_online
 from fieldseed.core.ticket_manager import list_tickets
 from fieldseed.modes.collector import collect
+
+from fieldseed.core.diagnostic_orchestrator import build_diagnostic_plan, format_plan
+from fieldseed.core.safety_kernel import safe_recommendation
+from fieldseed.core.evidence_score import score_evidence_package
 from fieldseed.paths import ROOT, DATA, EVIDENCE, LOGS, TOOLS, DB
 from fieldseed.playbooks import list_playbooks, render_playbook, search_playbooks
 
@@ -165,11 +169,53 @@ def launch_app():
     return 0
 
 
+
+def diagnose_cli(args):
+    prompt = " ".join(args.issue).strip()
+    if not prompt:
+        prompt = input("Describe the issue: ").strip()
+    plan = build_diagnostic_plan(prompt)
+    print(format_plan(plan))
+    return 0
+
+
+def safety_cli(args):
+    action = " ".join(args.action).strip()
+    if not action:
+        action = input("Action to safety-check: ").strip()
+    result = safe_recommendation(action)
+    print("FieldSeed Safety Gate")
+    print("=" * 50)
+    for key, value in result.items():
+        print(f"{key}: {value}")
+    return 0
+
+
+def evidence_score_cli(args):
+    result = score_evidence_package(args.path)
+    print("FieldSeed Evidence Score")
+    print("=" * 50)
+    print(f"Status: {result['status']}")
+    print(f"Score: {result['score']}%")
+    print(f"Package: {result.get('package', args.path)}")
+    for detail in result.get("details", []):
+        print(f"- {detail}")
+    return 0
+
 def main():
     parser = argparse.ArgumentParser(description="FieldSeed command center")
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("doctor")
     sub.add_parser("app")
+
+    diagnose_parser = sub.add_parser("diagnose")
+    diagnose_parser.add_argument("issue", nargs="*")
+
+    safety_parser = sub.add_parser("safety")
+    safety_parser.add_argument("action", nargs="*")
+
+    evidence_parser = sub.add_parser("evidence-score")
+    evidence_parser.add_argument("path")
 
     playbooks_parser = sub.add_parser("playbooks")
     playbooks_parser.add_argument("query", nargs="*")
@@ -195,6 +241,15 @@ def main():
         return ask_brain(" ".join(args.prompt).strip())
     if args.command == "collect":
         return run_collector(args)
+    if args.command == "diagnose":
+        return diagnose_cli(args)
+
+    if args.command == "safety":
+        return safety_cli(args)
+
+    if args.command == "evidence-score":
+        return evidence_score_cli(args)
+
     if args.command == "app":
         return launch_app()
     if args.command == "playbooks":

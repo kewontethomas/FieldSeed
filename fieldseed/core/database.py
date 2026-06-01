@@ -83,6 +83,14 @@ CREATE TABLE IF NOT EXISTS ai_memory (
     role TEXT NOT NULL,
     content TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    event_hash TEXT DEFAULT '',
+    details TEXT DEFAULT ''
+);
 """
 
 def now():
