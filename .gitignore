@@ -1,0 +1,51 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# Local runtime data
+data/fieldseed.db
+data/*.db
+data/logs/*
+data/evidence/*
+data/self_healing/backups/*
+data/self_healing/screenshots/*
+data/self_healing/patches/*
+data/core_loop/*
+data/tmp/*
+data/temp/*
+
+# Keep folder placeholders
+!data/logs/.gitkeep
+!data/evidence/.gitkeep
+!data/self_healing/backups/.gitkeep
+!data/self_healing/screenshots/.gitkeep
+!data/self_healing/patches/.gitkeep
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Secrets/config
+.env
+*.key
+*.pem
+*.pfx
+*.p12
+secrets.json
+config.local.json
+
+# Archives/installers
+*.zip
+*.7z
+*.rar
+*.exe
+*.msi
