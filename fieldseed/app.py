@@ -23,6 +23,7 @@ from fieldseed.core.evidence_engine import import_evidence, find_packages
 from fieldseed.core.self_healing import visual_self_inspection, create_repair_plan, apply_repair_plan, analyze_screenshot_file, list_repair_candidates
 from fieldseed.modes.collector import collect
 from fieldseed.paths import TOOLS, EVIDENCE
+from fieldseed.playbooks import list_playbooks, render_playbook, search_playbooks
 
 class FieldSeedApp(tk.Tk):
     def __init__(self):
@@ -44,7 +45,7 @@ class FieldSeedApp(tk.Tk):
         sidebar.grid_propagate(False)
         tk.Label(sidebar, text="🌱 FieldSeed", bg=self.colors["panel"], fg=self.colors["accent"], font=("Segoe UI", 22, "bold")).pack(anchor="w", padx=18, pady=(18,2))
         tk.Label(sidebar, text="Truth • Evidence • Growth", bg=self.colors["panel"], fg=self.colors["muted"], font=("Segoe UI", 9)).pack(anchor="w", padx=18, pady=(0,16))
-        for page in ["Dashboard","Open Tickets","Search Tickets","Tickets","Brain","Collector","Evidence","Knowledge","Rescue","Growth"]:
+        for page in ["Dashboard","Open Tickets","Search Tickets","Tickets","Playbooks","Brain","Collector","Evidence","Knowledge","Rescue","Growth"]:
             tk.Button(sidebar, text=page, anchor="w", command=lambda p=page:self.show(p), bg=self.colors["panel"], fg=self.colors["text"], activebackground=self.colors["card2"], activeforeground=self.colors["text"], bd=0, padx=16, pady=10).pack(fill="x", padx=8, pady=2)
         self.main = tk.Frame(self, bg=self.colors["bg"])
         self.main.grid(row=0, column=1, sticky="nsew")
@@ -127,6 +128,7 @@ class FieldSeedApp(tk.Tk):
             ("🎫 Tickets","Talk naturally. FieldSeed separates confirmed facts from unknowns and will not guess the system.","Tickets","primary"),
             ("🧠 Brain","Truth-locked AI. It only speaks from confirmed knowledge or asks for evidence.","Brain","good"),
             ("🧰 Collector","Run on another device without AI. It gathers evidence and brings it back to Brain Mode.","Collector","warn"),
+            ("📚 Playbooks","Guided troubleshooting for CCURE, OpenEye, Exacq, Milestone, RAID, Windows, and network discovery.","Playbooks","primary"),
             ("🌱 Growth","Active agent watches health, open tickets, and real improvement opportunities.","Growth","primary"),
         ]
         for i,(title,body,page,kind) in enumerate(items):
@@ -416,6 +418,94 @@ class FieldSeedApp(tk.Tk):
             win.destroy(); self.display_ticket(self.current_ticket_id)
             self.refresh_open_tickets() if hasattr(self, "refresh_open_tickets") else None
         self.button(win,"Close Ticket + Save Confirmed Knowledge",save,"warn").pack(pady=10)
+
+
+    def page_playbooks(self):
+        self.summary.config(text="Guided field troubleshooting paths that keep you from guessing.")
+        p = self.scroll_page()
+        p.grid_columnconfigure(0, weight=1)
+
+        top = tk.Frame(p, bg=self.colors["card"], highlightbackground=self.colors["line"], highlightthickness=1)
+        top.grid(row=0, column=0, sticky="ew", pady=8)
+        top.grid_columnconfigure(1, weight=1)
+        tk.Label(top, text="FieldSeed Playbooks", bg=self.colors["card"], fg=self.colors["text"], font=("Segoe UI", 15, "bold")).grid(row=0, column=0, columnspan=3, sticky="w", padx=14, pady=(12, 3))
+        tk.Message(top, text="Pick a known field issue or search by system. These are guided checks, not guesses. Document confirmed findings in tickets.", bg=self.colors["card"], fg=self.colors["muted"], width=900).grid(row=1, column=0, columnspan=3, sticky="w", padx=14, pady=(0, 8))
+
+        tk.Label(top, text="Search:", bg=self.colors["card"], fg=self.colors["muted"]).grid(row=2, column=0, sticky="w", padx=(14, 6), pady=(0, 12))
+        self.playbook_search_var = tk.StringVar()
+        search_entry = tk.Entry(top, textvariable=self.playbook_search_var, bg=self.colors["card2"], fg=self.colors["text"], insertbackground=self.colors["text"], bd=0)
+        search_entry.grid(row=2, column=1, sticky="ew", padx=6, pady=(0, 12))
+        self.button(top, "Search", self.refresh_playbooks, "primary").grid(row=2, column=2, sticky="e", padx=14, pady=(0, 12))
+
+        body = tk.Frame(p, bg=self.colors["bg"])
+        body.grid(row=1, column=0, sticky="nsew")
+        body.grid_columnconfigure(1, weight=1)
+        body.grid_rowconfigure(0, weight=1)
+
+        self.playbook_list = tk.Listbox(body, height=24, bg=self.colors["card"], fg=self.colors["text"], selectbackground=self.colors["accent"], selectforeground="#001018", bd=0, highlightthickness=1, highlightbackground=self.colors["line"])
+        self.playbook_list.grid(row=0, column=0, sticky="ns", padx=(0, 8))
+        self.playbook_list.bind("<<ListboxSelect>>", lambda event: self.show_selected_playbook())
+
+        self.playbook_out = scrolledtext.ScrolledText(body, height=30, bg="#07111f", fg=self.colors["text"], bd=0, wrap="word")
+        self.playbook_out.grid(row=0, column=1, sticky="nsew")
+
+        actions = tk.Frame(p, bg=self.colors["bg"])
+        actions.grid(row=2, column=0, sticky="w", pady=8)
+        self.button(actions, "Copy Current Playbook", self.copy_current_playbook, "good").pack(side="left", padx=4)
+        self.button(actions, "Create Ticket From Playbook", self.create_ticket_from_playbook, "warn").pack(side="left", padx=4)
+
+        self.refresh_playbooks()
+
+    def refresh_playbooks(self):
+        if not hasattr(self, "playbook_list"):
+            return
+        query = self.playbook_search_var.get() if hasattr(self, "playbook_search_var") else ""
+        self.playbook_list.delete(0, "end")
+        for name in search_playbooks(query):
+            self.playbook_list.insert("end", name)
+        if self.playbook_list.size() > 0:
+            self.playbook_list.selection_set(0)
+            self.show_selected_playbook()
+        else:
+            self.playbook_out.delete("1.0", "end")
+            self.playbook_out.insert("end", "No matching playbooks found.")
+
+    def selected_playbook_name(self):
+        if not hasattr(self, "playbook_list"):
+            return ""
+        selection = self.playbook_list.curselection()
+        if not selection:
+            return ""
+        return self.playbook_list.get(selection[0])
+
+    def show_selected_playbook(self):
+        name = self.selected_playbook_name()
+        if not name:
+            return
+        self.playbook_out.delete("1.0", "end")
+        self.playbook_out.insert("end", render_playbook(name))
+
+    def copy_current_playbook(self):
+        text = self.playbook_out.get("1.0", "end").strip() if hasattr(self, "playbook_out") else ""
+        if not text:
+            messagebox.showinfo("No playbook", "Select a playbook first.")
+            return
+        self.clipboard_clear()
+        self.clipboard_append(text)
+        messagebox.showinfo("Copied", "Playbook copied to clipboard.")
+
+    def create_ticket_from_playbook(self):
+        name = self.selected_playbook_name()
+        if not name:
+            messagebox.showinfo("No playbook", "Select a playbook first.")
+            return
+        text = f"Playbook selected: {name}\n\n" + render_playbook(name)
+        tid = create_ticket(text, site="", contact_name="", contact_phone="", contact_email="")
+        self.current_ticket_id = tid
+        messagebox.showinfo("Ticket Created", f"Created ticket #{tid} from playbook: {name}")
+        self.show("Tickets")
+        if hasattr(self, "ticket_out"):
+            self.display_ticket(tid)
 
     def page_brain(self):
         self.summary.config(text="Truth-locked assistant. It does not answer unless FieldSeed has confirmed knowledge.")

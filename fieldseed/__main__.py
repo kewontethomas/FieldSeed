@@ -6,6 +6,7 @@ from fieldseed.core.ai_bridge import ask_fieldseed, ollama_online
 from fieldseed.core.ticket_manager import list_tickets
 from fieldseed.modes.collector import collect
 from fieldseed.paths import ROOT, DATA, EVIDENCE, LOGS, TOOLS, DB
+from fieldseed.playbooks import list_playbooks, render_playbook, search_playbooks
 
 
 def doctor():
@@ -133,6 +134,29 @@ def run_collector(args):
     return 0
 
 
+
+def show_playbooks(query=""):
+    matches = search_playbooks(query)
+    if not matches:
+        print("No matching playbooks found.")
+        return 1
+    if query and len(matches) == 1:
+        print(render_playbook(matches[0]))
+        return 0
+    for name in matches:
+        print(f"- {name}")
+    print()
+    print('Tip: run python -m fieldseed playbooks --show "OpenEye"')
+    return 0
+
+def show_playbook_detail(query):
+    matches = search_playbooks(query)
+    if not matches:
+        print("No matching playbooks found.")
+        return 1
+    print(render_playbook(matches[0]))
+    return 0
+
 def launch_app():
     from fieldseed.app import FieldSeedApp
     init_db()
@@ -146,6 +170,10 @@ def main():
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("doctor")
     sub.add_parser("app")
+
+    playbooks_parser = sub.add_parser("playbooks")
+    playbooks_parser.add_argument("query", nargs="*")
+    playbooks_parser.add_argument("--show", action="store_true")
     tickets_parser = sub.add_parser("tickets")
     tickets_parser.add_argument("--limit", type=int, default=25)
     brain_parser = sub.add_parser("brain")
@@ -169,6 +197,9 @@ def main():
         return run_collector(args)
     if args.command == "app":
         return launch_app()
+    if args.command == "playbooks":
+        query = " ".join(args.query).strip()
+        return show_playbook_detail(query) if args.show else show_playbooks(query)
     parser.print_help()
     return 0
 
