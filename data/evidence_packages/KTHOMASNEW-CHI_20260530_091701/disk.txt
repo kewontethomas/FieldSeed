@@ -1,0 +1,1 @@
+ERROR: Command 'wmic diskdrive get model,status,size' returned non-zero exit status 1.

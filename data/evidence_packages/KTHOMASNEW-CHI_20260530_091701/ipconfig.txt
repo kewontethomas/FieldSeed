@@ -1,0 +1,91 @@
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : KTHOMASNEW-CHI
+   Primary Dns Suffix  . . . . . . . : 
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+   DNS Suffix Search List. . . . . . : tail82ceb0.ts.net
+                                       mynetworksettings.com
+
+Unknown adapter Tailscale:
+
+   Connection-specific DNS Suffix  . : tail82ceb0.ts.net
+   Description . . . . . . . . . . . : Tailscale Tunnel
+   Physical Address. . . . . . . . . : 
+   DHCP Enabled. . . . . . . . . . . : No
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : fd7a:115c:a1e0::6234:ed0f(Preferred) 
+   Link-local IPv6 Address . . . . . : fe80::1e83:d8c8:6f1d:9c49%42(Preferred) 
+   IPv4 Address. . . . . . . . . . . : 100.124.237.15(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.255.255
+   Default Gateway . . . . . . . . . : 
+   NetBIOS over Tcpip. . . . . . . . : Disabled
+   Connection-specific DNS Suffix Search List :
+                                       tail82ceb0.ts.net
+
+Wireless LAN adapter Wi-Fi 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Intel(R) Wi-Fi 7 BE201 320MHz #2
+   Physical Address. . . . . . . . . : D0-57-7E-14-5D-9E
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter Wi-Fi 4:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Intel(R) Wi-Fi 7 BE201 320MHz #4
+   Physical Address. . . . . . . . . : D2-57-7E-14-5D-9D
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . : mynetworksettings.com
+   Description . . . . . . . . . . . : Intel(R) Wi-Fi 7 BE201 320MHz
+   Physical Address. . . . . . . . . : D0-57-7E-14-5D-9D
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : 2600:1008:a134:7e3e:faf6:ac3:f568:7225(Preferred) 
+   Temporary IPv6 Address. . . . . . : 2600:1008:a134:7e3e:5dbb:4f1c:bdde:24dc(Preferred) 
+   Link-local IPv6 Address . . . . . : fe80::abd6:825:c5da:b4ce%11(Preferred) 
+   IPv4 Address. . . . . . . . . . . : 192.168.1.154(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Lease Obtained. . . . . . . . . . : Friday, May 29, 2026 7:34:51 PM
+   Lease Expires . . . . . . . . . . : Sunday, May 31, 2026 6:17:21 AM
+   Default Gateway . . . . . . . . . : fe80::3a88:71ff:fe53:f60e%11
+                                       192.168.1.1
+   DHCP Server . . . . . . . . . . . : 192.168.1.1
+   DHCPv6 IAID . . . . . . . . . . . : 131094398
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-30-AE-B0-8E-00-E0-4C-68-06-66
+   DNS Servers . . . . . . . . . . . : 192.168.1.1
+                                       2600:1008:a134:7e3e:3a88:71ff:fe53:f60e
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+
+Ethernet adapter Bluetooth Network Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Bluetooth Device (Personal Area Network)
+   Physical Address. . . . . . . . . : D0-57-7E-14-5D-A1
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Ethernet adapter vEthernet (WSL (Hyper-V firewall)):
+
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Hyper-V Virtual Ethernet Adapter
+   Physical Address. . . . . . . . . : 00-15-5D-54-A4-61
+   DHCP Enabled. . . . . . . . . . . : No
+   Autoconfiguration Enabled . . . . : Yes
+   Link-local IPv6 Address . . . . . : fe80::17d0:bff6:4b37:b37%64(Preferred) 
+   IPv4 Address. . . . . . . . . . . : 172.25.16.1(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.240.0
+   Default Gateway . . . . . . . . . : 
+   DHCPv6 IAID . . . . . . . . . . . : 1073747293
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-30-AE-B0-8E-00-E0-4C-68-06-66
+   NetBIOS over Tcpip. . . . . . . . : Enabled
