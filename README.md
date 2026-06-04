@@ -72,3 +72,80 @@ These commands add:
 - evidence package scoring
 - audit JSON logs with event hashes
 - stronger separation between confirmed knowledge, similar knowledge, and unknowns
+
+
+## AI Contribution Model
+
+FieldSeed uses AI as a controlled reasoning layer, not as an unchecked repair bot.
+
+AI can contribute by:
+- rewriting confirmed knowledge into clear technician language
+- comparing the current issue to saved closed tickets
+- helping summarize evidence packages
+- suggesting questions to close unknowns
+- ranking likely next diagnostic steps
+- generating service-ticket notes from confirmed facts
+- explaining why a fix is confirmed, similar, weak, or unknown
+
+AI should not:
+- invent fixes without evidence
+- run destructive actions
+- bypass the Safety Kernel
+- treat similar issues as confirmed fixes
+- modify systems without human approval, backup, and rollback plan
+
+The intended flow is:
+
+Issue -> Fact Engine -> Playbook Match -> Knowledge Match -> Evidence Score -> Safety Kernel -> Diagnostic Plan -> Audit Log.
+
+## FieldSeed vNext Cockpit Layout
+
+This build turns FieldSeed into the central desktop cockpit for the ecosystem:
+
+- **Mission Control**: daily overview for tickets, health, improvement ideas, and system status.
+- **Intake Engine**: paste emails, Teams messages, tickets, or work orders and extract ticket/task/checklist/closeout details.
+- **Observe Mode**: captures before/after snapshots so FieldSeed can learn from what changed while a problem was being solved.
+- **Toolbox**: launch point for Windows, network, storage/RAID, camera/VMS, access control, and USB rescue workflows.
+- **Tickets**: quick work capture for simple boring tickets and complex issues.
+- **Playbooks**: guided procedures for repeat field work.
+- **Brain**: truth-gated AI assistant and diagnostic planner.
+- **Evidence**: collector/import/score area for desktop, USB, and remote evidence packages.
+- **Memory**: confirmed fixes, closed tickets, observations, and reusable knowledge.
+- **Systems**: architecture map for Desktop App, USB Rescue, GPS Task App, Cloud Hub, and Observer Agents.
+- **Safety Audit**: risk classification and audit review.
+- **Growth**: self-inspection, repair candidates, and screenshot evidence.
+
+New command line helpers:
+
+```powershell
+python -m fieldseed intake --file email.txt --ticket --geo-task
+python -m fieldseed observe start "camera offline issue"
+python -m fieldseed observe stop --folder data/observations/<folder> --resolved --note "Camera returned online"
+python -m fieldseed audit
+```
+
+
+## GPS Context App Integration
+
+FieldSeed is the intelligence layer and your GPS/context app is the execution layer.
+
+1. Open FieldSeed Desktop.
+2. Go to **Sites**.
+3. Click **Set GPS App Drop Folder**.
+4. Choose the folder your GPS/context app watches for imports.
+5. In **Intake**, paste or load a ticket/email.
+6. Review and correct the extracted fields.
+7. Click **Export GPS Task** or **Ticket + GPS**.
+
+FieldSeed writes each task JSON to:
+
+```text
+data/tasks/
+data/gps_outbox/
+```
+
+If a GPS drop folder is configured, FieldSeed also copies the same task package there. Your GPS app should import the JSON, create a location-aware task, and later send back completion/arrival/departure data.
+
+## Ticket Protection
+
+FieldSeed now blocks empty quick tickets. Tickets can also be archived or deleted from the Ticket board. Delete removes the ticket and timeline; archive keeps it out of active work without losing history.
